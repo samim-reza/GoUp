@@ -1,0 +1,63 @@
+<div class="card">
+  <div class="topbar">
+    <div>
+      <h3 style="margin:0;">Lead Forms</h3>
+      <p class="muted" style="margin:4px 0 0;">Enable or disable form selection for automation scope.</p>
+    </div>
+  </div>
+
+  <form class="row" hx-get="{% url 'dashboard-forms' %}" hx-target="#dashboard-panel" hx-swap="innerHTML">
+    <div>
+      <label>Filter by page</label>
+      <select name="page" onchange="this.form.requestSubmit()">
+        <option value="">All pages</option>
+        {% for page in pages %}
+          <option value="{{ page.id }}" {% if selected_page_id == page.id|stringformat:'s' %}selected{% endif %}>{{ page.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </form>
+
+  {% if error_message %}
+  <p style="color:#b42318; margin-top:12px;">{{ error_message }}</p>
+  {% endif %}
+
+  <table>
+    <thead>
+      <tr>
+        <th>Page</th>
+        <th>Form Name</th>
+        <th>Form ID</th>
+        <th>Status</th>
+        <th>Selected</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for form in forms %}
+      <tr>
+        <td>{{ form.page.name }}</td>
+        <td>{{ form.name }}</td>
+        <td>{{ form.form_id }}</td>
+        <td>{{ form.status }}</td>
+        <td>
+          {% if form.is_selected %}
+            <span class="badge badge-ok">Yes</span>
+          {% else %}
+            <span class="badge">No</span>
+          {% endif %}
+        </td>
+        <td>
+          <form hx-post="{% url 'dashboard-form-toggle' form.id %}" hx-target="#dashboard-panel" hx-swap="innerHTML" style="display:inline-block;">
+            {% csrf_token %}
+            <input type="hidden" name="page" value="{{ selected_page_id }}">
+            <button class="btn btn-secondary" type="submit">Toggle</button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="muted">No forms found for this filter.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

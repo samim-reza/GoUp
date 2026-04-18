@@ -1,0 +1,42 @@
+{% extends "dashboard/base.html" %}
+
+{% block body %}
+<div class="layout">
+  <aside class="sidebar">
+    <h1 class="brand">GoUp</h1>
+    <p class="muted" style="margin-top:0;">Meta Lead Ads automation console</p>
+
+    <button class="nav-btn" hx-get="{% url 'dashboard-overview' %}" hx-target="#dashboard-panel" hx-swap="innerHTML">Overview</button>
+    <button class="nav-btn" hx-get="{% url 'dashboard-pages' %}" hx-target="#dashboard-panel" hx-swap="innerHTML">Pages</button>
+    <button class="nav-btn" hx-get="{% url 'dashboard-forms' %}" hx-target="#dashboard-panel" hx-swap="innerHTML">Forms</button>
+    <button class="nav-btn" hx-get="{% url 'dashboard-templates' %}" hx-target="#dashboard-panel" hx-swap="innerHTML">Templates</button>
+    <button class="nav-btn" hx-get="{% url 'dashboard-rules' %}" hx-target="#dashboard-panel" hx-swap="innerHTML">Rules</button>
+    <button class="nav-btn" hx-get="{% url 'dashboard-logs' %}" hx-target="#dashboard-panel" hx-swap="innerHTML">Message Logs</button>
+    <button class="nav-btn" hx-get="{% url 'dashboard-dummy' %}" hx-target="#dashboard-panel" hx-swap="innerHTML">Dummy Lead Test</button>
+
+    <form method="post" action="{% url 'dashboard-logout' %}" style="margin-top:20px;">
+      {% csrf_token %}
+      <button class="btn btn-secondary" style="width:100%;" type="submit">Sign out</button>
+    </form>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h2 style="margin:0;">Automation Dashboard</h2>
+        <p class="muted" style="margin:4px 0 0;">Welcome, {{ request.user.get_username }}</p>
+      </div>
+    </div>
+
+    <section id="dashboard-panel" hx-get="{% url 'dashboard-overview' %}" hx-trigger="load" hx-swap="innerHTML">
+      <div class="card">Loading dashboard...</div>
+    </section>
+  </main>
+</div>
+
+<script>
+  document.body.addEventListener("htmx:configRequest", function (event) {
+    event.detail.headers["X-CSRFToken"] = "{{ csrf_token }}";
+  });
+</script>
+{% endblock %}

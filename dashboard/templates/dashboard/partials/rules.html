@@ -1,0 +1,113 @@
+<div class="card">
+  <h3 style="margin-top:0;">Automation Rules</h3>
+  <p class="muted">Attach templates to selected page/forms with opt-in enforcement toggles.</p>
+
+  <form hx-post="{% url 'dashboard-rule-create' %}" hx-target="#dashboard-panel" hx-swap="innerHTML">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div class="row">
+      <div>
+        <label>Rule Name</label>
+        {{ form.name }}
+        {{ form.name.errors }}
+      </div>
+      <div>
+        <label>Page</label>
+        {{ form.page }}
+        {{ form.page.errors }}
+      </div>
+      <div>
+        <label>Priority</label>
+        {{ form.priority }}
+        {{ form.priority.errors }}
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:10px;">
+      <div>
+        <label>Email Template</label>
+        {{ form.email_template }}
+        {{ form.email_template.errors }}
+      </div>
+      <div>
+        <label>SMS Template</label>
+        {{ form.sms_template }}
+        {{ form.sms_template.errors }}
+      </div>
+      <div>
+        <label>WhatsApp Template</label>
+        {{ form.whatsapp_template }}
+        {{ form.whatsapp_template.errors }}
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:10px;">
+      <div>
+        <label>Lead Forms (optional)</label>
+        {{ form.lead_forms }}
+        {{ form.lead_forms.errors }}
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:10px;">
+      <div>{{ form.require_email_opt_in }} <label style="display:inline;">Require email opt-in</label></div>
+      <div>{{ form.require_sms_opt_in }} <label style="display:inline;">Require SMS opt-in</label></div>
+      <div>{{ form.enabled }} <label style="display:inline;">Enabled</label></div>
+    </div>
+
+    <div style="margin-top:12px;">
+      <button class="btn" type="submit">Create Rule</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Page</th>
+        <th>Templates</th>
+        <th>Forms Scope</th>
+        <th>Enabled</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for rule in rules %}
+      <tr>
+        <td>{{ rule.name }}</td>
+        <td>{{ rule.page.name }}</td>
+        <td>
+          {% if rule.email_template %}<span class="badge">Email: {{ rule.email_template.name }}</span>{% endif %}
+          {% if rule.sms_template %}<span class="badge">SMS: {{ rule.sms_template.name }}</span>{% endif %}
+          {% if rule.whatsapp_template %}<span class="badge">WhatsApp: {{ rule.whatsapp_template.name }}</span>{% endif %}
+        </td>
+        <td>
+          {% if rule.lead_forms.all %}
+            {% for lf in rule.lead_forms.all %}
+              <span class="badge">{{ lf.name }}</span>
+            {% empty %}
+              <span class="muted">All forms on page</span>
+            {% endfor %}
+          {% endif %}
+        </td>
+        <td>{% if rule.enabled %}<span class="badge badge-ok">Yes</span>{% else %}<span class="badge">No</span>{% endif %}</td>
+        <td>
+          <form hx-post="{% url 'dashboard-rule-toggle' rule.id %}" hx-target="#dashboard-panel" hx-swap="innerHTML" style="display:inline-block;">
+            {% csrf_token %}
+            <button class="btn btn-secondary" type="submit">Toggle</button>
+          </form>
+          <form hx-post="{% url 'dashboard-rule-delete' rule.id %}" hx-target="#dashboard-panel" hx-swap="innerHTML" style="display:inline-block; margin-left:6px;">
+            {% csrf_token %}
+            <button class="btn btn-danger" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="muted">No rules configured yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

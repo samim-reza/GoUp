@@ -1,0 +1,23 @@
+{% extends "dashboard/base.html" %}
+
+{% block body %}
+<div style="min-height:100vh;display:grid;place-items:center;padding:20px;">
+  <div class="card" style="width:min(430px,100%);">
+    <h1 style="margin-top:0;">Sign In</h1>
+    <p class="muted">Use your GoUp account credentials to access the dashboard.</p>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div style="margin-bottom:10px;">
+        <label for="id_username">Username</label>
+        {{ form.username }}
+      </div>
+      <div style="margin-bottom:14px;">
+        <label for="id_password">Password</label>
+        {{ form.password }}
+      </div>
+      <button class="btn" type="submit" style="width:100%;">Sign in</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+from django.urls import path
+
+from dashboard.views import (
+    DashboardLoginView,
+    DashboardLogoutView,
+    DashboardShellView,
+    create_rule_action,
+    create_template_action,
+    delete_rule_action,
+    delete_template_action,
+    dummy_lead_section,
+    forms_section,
+    logs_section,
+    overview_section,
+    pages_section,
+    rules_section,
+    sync_forms_action,
+    sync_pages_action,
+    submit_dummy_lead_action,
+    templates_section,
+    toggle_form_action,
+    toggle_rule_action,
+    toggle_template_action,
+)
+
+
+urlpatterns = [
+    path("login/", DashboardLoginView.as_view(), name="dashboard-login"),
+    path("logout/", DashboardLogoutView.as_view(), name="dashboard-logout"),
+    path("", DashboardShellView.as_view(), name="dashboard-shell"),
+    path("app/overview/", overview_section, name="dashboard-overview"),
+    path("app/pages/", pages_section, name="dashboard-pages"),
+    path("app/forms/", forms_section, name="dashboard-forms"),
+    path("app/templates/", templates_section, name="dashboard-templates"),
+    path("app/rules/", rules_section, name="dashboard-rules"),
+    path("app/logs/", logs_section, name="dashboard-logs"),
+    path("app/dummy/", dummy_lead_section, name="dashboard-dummy"),
+    path("app/actions/pages/sync/", sync_pages_action, name="dashboard-pages-sync"),
+    path("app/actions/pages/<int:page_pk>/sync-forms/", sync_forms_action, name="dashboard-forms-sync"),
+    path("app/actions/forms/<int:form_pk>/toggle/", toggle_form_action, name="dashboard-form-toggle"),
+    path("app/actions/templates/create/", create_template_action, name="dashboard-template-create"),
+    path("app/actions/templates/<int:template_pk>/toggle/", toggle_template_action, name="dashboard-template-toggle"),
+    path("app/actions/templates/<int:template_pk>/delete/", delete_template_action, name="dashboard-template-delete"),
+    path("app/actions/rules/create/", create_rule_action, name="dashboard-rule-create"),
+    path("app/actions/rules/<int:rule_pk>/toggle/", toggle_rule_action, name="dashboard-rule-toggle"),
+    path("app/actions/rules/<int:rule_pk>/delete/", delete_rule_action, name="dashboard-rule-delete"),
+    path("app/actions/dummy/submit/", submit_dummy_lead_action, name="dashboard-dummy-submit"),
+]

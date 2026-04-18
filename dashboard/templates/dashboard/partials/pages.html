@@ -1,0 +1,48 @@
+<div class="card">
+  <div class="topbar">
+    <div>
+      <h3 style="margin:0;">Facebook Pages</h3>
+      <p class="muted" style="margin:4px 0 0;">Sync pages and drill down to page-specific forms.</p>
+    </div>
+    <form hx-post="{% url 'dashboard-pages-sync' %}" hx-target="#dashboard-panel" hx-swap="innerHTML">
+      {% csrf_token %}
+      <button class="btn" type="submit" {% if not has_account %}disabled{% endif %}>Sync Pages</button>
+    </form>
+  </div>
+
+  {% if not has_account %}
+  <p class="muted">No active Facebook account is connected yet. Start OAuth from the API endpoint and come back to sync.</p>
+  {% endif %}
+
+  {% if error_message %}
+  <p style="color:#b42318; margin-top:12px;">{{ error_message }}</p>
+  {% endif %}
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Page ID</th>
+        <th>Forms</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for page in pages %}
+      <tr>
+        <td>{{ page.name }}</td>
+        <td>{{ page.page_id }}</td>
+        <td>{{ page.lead_forms.count }}</td>
+        <td>
+          <form hx-post="{% url 'dashboard-forms-sync' page.id %}" hx-target="#dashboard-panel" hx-swap="innerHTML" style="display:inline-block;">
+            {% csrf_token %}
+            <button class="btn btn-secondary" type="submit">Sync Forms</button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="muted">No pages found. Click Sync Pages.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

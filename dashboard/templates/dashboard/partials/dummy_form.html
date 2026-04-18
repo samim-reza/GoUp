@@ -1,0 +1,144 @@
+<div class="card">
+  <h3 style="margin-top:0;">Dummy Lead Test</h3>
+  <p class="muted">Use this local form to simulate a lead submission and trigger SMS/Email/WhatsApp sends without Meta/Facebook data.</p>
+
+  <form hx-post="{% url 'dashboard-dummy-submit' %}" hx-target="#dashboard-panel" hx-swap="innerHTML">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div class="row">
+      <div>
+        <label>Full Name</label>
+        {{ form.full_name }}
+        {{ form.full_name.errors }}
+      </div>
+      <div>
+        <label>Email (optional)</label>
+        {{ form.email }}
+        {{ form.email.errors }}
+      </div>
+      <div>
+        <label>Phone (for SMS)</label>
+        {{ form.phone }}
+        {{ form.phone.errors }}
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:10px;">
+      <div>{{ form.consent_email }} <label style="display:inline;">Email consent</label></div>
+      <div>{{ form.consent_sms }} <label style="display:inline;">SMS consent</label></div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <h4 style="margin-top:0;">SMS Settings</h4>
+      <div style="margin-bottom:8px;">{{ form.send_sms }} <label style="display:inline;">Send SMS</label></div>
+      <label>SMS Body</label>
+      {{ form.sms_body }}
+      {{ form.sms_body.errors }}
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <h4 style="margin-top:0;">Email Settings</h4>
+      <div style="margin-bottom:8px;">{{ form.send_email }} <label style="display:inline;">Send Email</label></div>
+      <label>Email Subject</label>
+      {{ form.email_subject }}
+      {{ form.email_subject.errors }}
+      <div style="margin-top:8px;">
+        <label>Email Body</label>
+        {{ form.email_body }}
+        {{ form.email_body.errors }}
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <h4 style="margin-top:0;">WhatsApp Settings</h4>
+      <div style="margin-bottom:8px;">{{ form.send_whatsapp }} <label style="display:inline;">Send WhatsApp</label></div>
+      <label>WhatsApp Body</label>
+      {{ form.whatsapp_body }}
+      {{ form.whatsapp_body.errors }}
+      <div style="margin-top:8px;">
+        <label>Twilio Content SID (optional)</label>
+        {{ form.whatsapp_content_sid }}
+        {{ form.whatsapp_content_sid.errors }}
+      </div>
+      <div style="margin-top:8px;">
+        <label>Twilio Content Variables JSON</label>
+        {{ form.whatsapp_content_variables }}
+        {{ form.whatsapp_content_variables.errors }}
+      </div>
+    </div>
+
+    <div style="margin-top:12px;">
+      <button class="btn" type="submit">Submit Dummy Lead</button>
+    </div>
+  </form>
+</div>
+
+{% if result_error %}
+<div class="card" style="border-color:#fca5a5;">
+  <h4 style="margin-top:0;color:#991b1b;">Provider Error</h4>
+  <p style="margin:0;">{{ result_error }}</p>
+</div>
+{% endif %}
+
+{% if result_logs %}
+<div class="card">
+  <h4 style="margin-top:0;">Current Submission Result</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>Channel</th>
+        <th>Recipient</th>
+        <th>Status</th>
+        <th>Provider ID</th>
+        <th>Error</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for log in result_logs %}
+      <tr>
+        <td>{{ log.channel|upper }}</td>
+        <td>{{ log.recipient }}</td>
+        <td>
+          {% if log.status == 'sent' %}<span class="badge badge-ok">{{ log.status }}</span>{% elif log.status == 'failed' %}<span class="badge badge-fail">{{ log.status }}</span>{% else %}<span class="badge">{{ log.status }}</span>{% endif %}
+        </td>
+        <td>{{ log.provider_message_id|default:"-" }}</td>
+        <td>{{ log.error_message|default:"-" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+<div class="card">
+  <h4 style="margin-top:0;">Recent Message Activity</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>Created</th>
+        <th>Lead</th>
+        <th>Rule</th>
+        <th>Channel</th>
+        <th>Recipient</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for log in recent_logs %}
+      <tr>
+        <td>{{ log.created_at }}</td>
+        <td>{{ log.lead.leadgen_id }}</td>
+        <td>{{ log.rule.name }}</td>
+        <td>{{ log.channel|upper }}</td>
+        <td>{{ log.recipient }}</td>
+        <td>
+          {% if log.status == 'sent' %}<span class="badge badge-ok">{{ log.status }}</span>{% elif log.status == 'failed' %}<span class="badge badge-fail">{{ log.status }}</span>{% else %}<span class="badge">{{ log.status }}</span>{% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="muted">No message logs yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

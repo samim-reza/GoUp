@@ -1,0 +1,7 @@
+python manage.py runserver 0.0.0.0:8000
+
+cd /home/samim01/Code/GoUp
+/home/samim01/Code/GoUp/.venv/bin/celery -A config worker -l INFO
+
+cd /home/samim01/Code/GoUp
+/home/samim01/Code/GoUp/.venv/bin/celery -A config beat -l INFO
