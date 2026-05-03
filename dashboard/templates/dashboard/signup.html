@@ -1,0 +1,39 @@
+{% extends "dashboard/base.html" %}
+
+{% block body %}
+<div style="min-height:100vh;display:grid;place-items:center;padding:20px;">
+  <div class="card" style="width:min(430px,100%);">
+    <h1 style="margin-top:0;">Sign Up</h1>
+    <p class="muted">Create a GoUp account to connect Facebook and automate lead follow-up.</p>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      {% if request.GET.next %}
+      <input type="hidden" name="next" value="{{ request.GET.next }}">
+      {% endif %}
+      <div style="margin-bottom:10px;">
+        <label for="id_username">Username</label>
+        {{ form.username }}
+        {{ form.username.errors }}
+      </div>
+      <div style="margin-bottom:10px;">
+        <label for="id_email">Email</label>
+        {{ form.email }}
+        {{ form.email.errors }}
+      </div>
+      <div style="margin-bottom:10px;">
+        <label for="id_password1">Password</label>
+        {{ form.password1 }}
+        {{ form.password1.errors }}
+      </div>
+      <div style="margin-bottom:14px;">
+        <label for="id_password2">Confirm Password</label>
+        {{ form.password2 }}
+        {{ form.password2.errors }}
+      </div>
+      <button class="btn" type="submit" style="width:100%;">Create account</button>
+    </form>
+    <a class="btn btn-secondary" href="{% url 'dashboard-login' %}" style="width:100%; margin-top:10px;">Back to sign in</a>
+  </div>
+</div>
+{% endblock %}

@@ -4,14 +4,23 @@
       <h3 style="margin:0;">Facebook Pages</h3>
       <p class="muted" style="margin:4px 0 0;">Sync pages and drill down to page-specific forms.</p>
     </div>
-    <form hx-post="{% url 'dashboard-pages-sync' %}" hx-target="#dashboard-panel" hx-swap="innerHTML">
-      {% csrf_token %}
-      <button class="btn" type="submit" {% if not has_account %}disabled{% endif %}>Sync Pages</button>
-    </form>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <a class="btn btn-secondary {% if not is_owner %}disabled{% endif %}" href="{% if is_owner %}{% url 'facebook-oauth-start' %}{% else %}#{% endif %}">
+        {% if has_account %}Reconnect Facebook{% else %}Connect Facebook{% endif %}
+      </a>
+      <form hx-post="{% url 'dashboard-pages-sync' %}" hx-target="#dashboard-panel" hx-swap="innerHTML" style="margin:0;">
+        {% csrf_token %}
+        <button class="btn" type="submit" {% if not has_account or not is_owner %}disabled{% endif %}>Sync Pages</button>
+      </form>
+    </div>
   </div>
 
+  {% if not is_owner %}
+  <p class="muted">You are a member. Only the owner can connect Facebook or run page/form sync.</p>
+  {% endif %}
+
   {% if not has_account %}
-  <p class="muted">No active Facebook account is connected yet. Start OAuth from the API endpoint and come back to sync.</p>
+  <p class="muted">No active Facebook account is connected yet. Click Connect Facebook, approve permissions, then return and click Sync Pages.</p>
   {% endif %}
 
   {% if error_message %}

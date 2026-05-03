@@ -2,7 +2,7 @@
   <div class="topbar">
     <div>
       <h3 style="margin:0;">Lead Forms</h3>
-      <p class="muted" style="margin:4px 0 0;">Enable or disable form selection for automation scope.</p>
+      <p class="muted" style="margin:4px 0 0;">Enable or disable form selection for automation scope. Use Manage in Meta for form edit/publish actions.</p>
     </div>
   </div>
 
@@ -29,8 +29,9 @@
         <th>Form Name</th>
         <th>Form ID</th>
         <th>Status</th>
+        <th>Leads</th>
         <th>Selected</th>
-        <th>Action</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -40,6 +41,7 @@
         <td>{{ form.name }}</td>
         <td>{{ form.form_id }}</td>
         <td>{{ form.status }}</td>
+        <td>{{ form.lead_count }}</td>
         <td>
           {% if form.is_selected %}
             <span class="badge badge-ok">Yes</span>
@@ -48,6 +50,7 @@
           {% endif %}
         </td>
         <td>
+          <a class="btn btn-secondary" href="https://www.facebook.com/{{ form.page.page_id }}" target="_blank" rel="noopener" style="margin-right:6px;">Manage in Meta</a>
           <form hx-post="{% url 'dashboard-form-toggle' form.id %}" hx-target="#dashboard-panel" hx-swap="innerHTML" style="display:inline-block;">
             {% csrf_token %}
             <input type="hidden" name="page" value="{{ selected_page_id }}">
@@ -56,7 +59,7 @@
         </td>
       </tr>
       {% empty %}
-      <tr><td colspan="6" class="muted">No forms found for this filter.</td></tr>
+      <tr><td colspan="7" class="muted">No forms found for this filter.</td></tr>
       {% endfor %}
     </tbody>
   </table>

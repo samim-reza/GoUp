@@ -1,0 +1,101 @@
+<div class="card">
+  <div class="topbar">
+    <div>
+      <h3 style="margin:0;">Team Access</h3>
+      <p class="muted" style="margin:4px 0 0;">Invite members, revoke access, and transfer account ownership.</p>
+    </div>
+  </div>
+
+  <p class="muted" style="margin-top:0;">Workspace: <strong>{{ account.name }}</strong></p>
+
+  {% if info_message %}
+  <p style="color:#166534; margin-top:8px;">{{ info_message }}</p>
+  {% endif %}
+  {% if error_message %}
+  <p style="color:#b42318; margin-top:8px;">{{ error_message }}</p>
+  {% endif %}
+
+  {% if is_owner %}
+  <form class="row" hx-post="{% url 'dashboard-team-invite' %}" hx-target="#dashboard-panel" hx-swap="innerHTML" style="margin-top:12px;">
+    {% csrf_token %}
+    <div>
+      <label>Invite by email</label>
+      <input type="email" name="email" placeholder="teammate@example.com" required>
+    </div>
+    <div style="align-self:end;">
+      <button class="btn" type="submit">Send Invite</button>
+    </div>
+  </form>
+  {% else %}
+  <p class="muted">You are a member. Only the owner can invite or remove users.</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0;">Active Members</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for m in members %}
+      <tr>
+        <td>{{ m.user.get_username }}</td>
+        <td>{{ m.user.email|default:'-' }}</td>
+        <td>
+          {% if m.role == 'owner' %}
+            <span class="badge badge-ok">Owner</span>
+          {% else %}
+            <span class="badge">Member</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if is_owner and m.role != 'owner' %}
+          <form hx-post="{% url 'dashboard-team-transfer-owner' m.id %}" hx-target="#dashboard-panel" hx-swap="innerHTML" style="display:inline-block; margin-right:6px;">
+            {% csrf_token %}
+            <button class="btn btn-secondary" type="submit">Make Owner</button>
+          </form>
+          <form hx-post="{% url 'dashboard-team-remove' m.id %}" hx-target="#dashboard-panel" hx-swap="innerHTML" style="display:inline-block;">
+            {% csrf_token %}
+            <button class="btn btn-danger" type="submit">Remove</button>
+          </form>
+          {% else %}
+            <span class="muted">-</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="muted">No active members.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0;">Pending Invitations</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Invited By</th>
+        <th>Expires</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for inv in pending_invitations %}
+      <tr>
+        <td>{{ inv.email }}</td>
+        <td>{{ inv.invited_by.get_username }}</td>
+        <td>{{ inv.expires_at|date:"Y-m-d H:i" }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="3" class="muted">No pending invitations.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

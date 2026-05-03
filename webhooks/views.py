@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from webhooks.models import WebhookEvent
 from webhooks.services.signatures import verify_meta_signature
-from webhooks.tasks import process_meta_webhook_event
+from webhooks.tasks import process_meta_webhook_event  # noqa: F401
 
 
 def _extract_meta_change(change: dict, entry: dict) -> tuple[str, str, str, datetime | None]:

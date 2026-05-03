@@ -1,0 +1,106 @@
+<div class="card">
+  <div class="topbar">
+    <div>
+      <h3 style="margin:0;">Leads</h3>
+      <p class="muted" style="margin:4px 0 0;">Review submitted lead data and track form performance.</p>
+    </div>
+  </div>
+
+  <div class="grid-two" style="margin-bottom:12px;">
+    <div class="kpi"><h3>Total Leads</h3><p>{{ total_leads }}</p></div>
+    <div class="kpi"><h3>Last 24 Hours</h3><p>{{ recent_count }}</p></div>
+    <div class="kpi"><h3>With Email</h3><p>{{ email_count }}</p></div>
+    <div class="kpi"><h3>With Phone</h3><p>{{ phone_count }}</p></div>
+  </div>
+
+  <form class="row" hx-get="{% url 'dashboard-leads' %}" hx-target="#dashboard-panel" hx-swap="innerHTML" style="margin-bottom:10px;">
+    <div>
+      <label>Page</label>
+      <select name="page" onchange="this.form.requestSubmit()">
+        <option value="">All pages</option>
+        {% for page in pages %}
+          <option value="{{ page.id }}" {% if selected_page_id == page.id|stringformat:'s' %}selected{% endif %}>{{ page.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label>Form</label>
+      <select name="form" onchange="this.form.requestSubmit()">
+        <option value="">All forms</option>
+        {% for form in forms %}
+          <option value="{{ form.id }}" {% if selected_form_id == form.id|stringformat:'s' %}selected{% endif %}>{{ form.page.name }} - {{ form.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label>Search (name/email/phone)</label>
+      <input type="text" name="q" value="{{ query }}" placeholder="Search leads..." />
+    </div>
+    <div style="align-self:end;">
+      <button class="btn" type="submit">Apply</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0;">Top Forms By Lead Count</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Page</th>
+        <th>Form</th>
+        <th>Leads</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for stat in form_stats %}
+      <tr>
+        <td>{{ stat.page__name }}</td>
+        <td>{{ stat.lead_form__name|default:"Unknown Form" }}</td>
+        <td>{{ stat.total }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="3" class="muted">No lead data yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0;">Lead Submissions (Latest 200)</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Created</th>
+        <th>Page</th>
+        <th>Form</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Lead ID</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for lead in leads %}
+      <tr>
+        <td>{{ lead.created_at|date:"Y-m-d H:i" }}</td>
+        <td>{{ lead.page.name }}</td>
+        <td>{% if lead.lead_form %}{{ lead.lead_form.name }}{% else %}<span class="muted">Unknown</span>{% endif %}</td>
+        <td>{{ lead.full_name|default:"-" }}</td>
+        <td>{{ lead.email|default:"-" }}</td>
+        <td>{{ lead.phone|default:"-" }}</td>
+        <td>{{ lead.leadgen_id }}</td>
+      </tr>
+      {% if lead.raw_answers %}
+      <tr>
+        <td colspan="7" class="muted" style="font-size:12px;">
+          Raw Answers: {{ lead.raw_answers }}
+        </td>
+      </tr>
+      {% endif %}
+      {% empty %}
+      <tr><td colspan="7" class="muted">No leads found for this filter.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

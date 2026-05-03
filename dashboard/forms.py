@@ -3,9 +3,30 @@ from __future__ import annotations
 import json
 
 from django import forms
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import UserCreationForm
 
 from automations.models import AutomationRule, MessageTemplate
 from facebook_integration.models import FacebookPage, LeadForm
+
+
+User = get_user_model()
+
+
+class DashboardSignupForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ("username", "email", "password1", "password2")
+
+    def clean_email(self):
+        email = (self.cleaned_data.get("email") or "").strip().lower()
+        if not email:
+            raise forms.ValidationError("Email is required.")
+        if User.objects.filter(email__iexact=email).exists():
+            raise forms.ValidationError("An account with this email already exists.")
+        return email
 
 
 class MessageTemplateForm(forms.ModelForm):
