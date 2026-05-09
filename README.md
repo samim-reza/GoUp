@@ -2,6 +2,16 @@
 
 GoUp is a Django-based dashboard for Facebook Lead Ads automation. It connects a Facebook account, syncs pages and forms, ingests leads via webhooks, and triggers follow-up messaging rules (email, SMS, WhatsApp).
 
+<p align="center">
+  <img src="dashboard/static/dashboard/images/hero-mockup.png" alt="GoUp Dashboard Mockup" width="800"><br/>
+  <em>GoUp Interface & Dashboard Automation</em>
+</p>
+
+<p align="center">
+  <img src="dashboard/static/dashboard/images/hero-abstract.png" alt="GoUp Abstract Flow" width="800"><br/>
+  <em>Automated workflow from Facebook to WhatsApp & Email</em>
+</p>
+
 ## Features
 - Facebook OAuth connect and page/form sync
 - Lead ingestion via Meta webhooks

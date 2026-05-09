@@ -791,3 +791,6 @@ def transfer_owner_action(request: HttpRequest, membership_pk: int) -> HttpRespo
         "dashboard/partials/team.html",
         _team_context(request, info_message="Ownership transferred successfully."),
     )
+
+class LandingPageView(TemplateView):
+    template_name = "landing/index.html"

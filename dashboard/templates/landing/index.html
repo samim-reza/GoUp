@@ -1,0 +1,466 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GoUp | Automate Your Facebook Lead Follow-ups</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4F46E5;
+      --primary-hover: #4338CA;
+      --surface: #FFFFFF;
+      --surface-alt: #F8FAFC;
+      --text: #0F172A;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-glow: 0 0 40px -10px rgba(79, 70, 229, 0.3);
+      --gradient-bg: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+      --gradient-text: linear-gradient(135deg, #0F172A 0%, #334155 100%);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background: var(--gradient-bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Container layout */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Typography */
+    h1, h2, h3, h4 { letter-spacing: -0.02em; line-height: 1.2; font-weight: 700; }
+    
+    .text-gradient {
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+      box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.39);
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px 0 rgba(79, 70, 229, 0.23);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .btn-outline:hover {
+      background-color: var(--surface-alt);
+      border-color: #CBD5E1;
+    }
+
+    /* Navbar */
+    .navbar {
+      padding: 20px 0;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-decoration: none;
+      letter-spacing: -0.04em;
+    }
+
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--primary);
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+    .logo-icon::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; right: -4px;
+      width: 20px; height: 20px;
+      background: white;
+      border-radius: 50%;
+    }
+
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    
+    .nav-actions { display: flex; gap: 16px; align-items: center; }
+
+    /* Hero Section */
+    .hero {
+      padding: 180px 0 100px;
+      text-align: center;
+      position: relative;
+    }
+
+    /* Decorative background blobs */
+    .hero-blob {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(79, 70, 229, 0.1) 0%, rgba(255,255,255,0) 70%);
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: #EEF2FF;
+      color: var(--primary);
+      border-radius: 100px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      border: 1px solid rgba(79, 70, 229, 0.1);
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 5vw, 4.5rem);
+      max-width: 900px;
+      margin: 0 auto 24px;
+      letter-spacing: -0.03em;
+    }
+
+    .hero p {
+      font-size: clamp(1.125rem, 2vw, 1.35rem);
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 0 auto 40px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Hero Image */
+    .hero-image-wrapper {
+      margin-top: 80px;
+      position: relative;
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      background: white;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg), var(--shadow-glow);
+    }
+
+    .hero-image-wrapper img {
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius-md);
+      display: block;
+      /* Background pattern placeholder for when image is missing/loading */
+      background-color: var(--surface-alt);
+      object-fit: cover;
+    }
+
+    /* Logos */
+    .logos-section {
+      padding: 60px 0;
+      border-bottom: 1px solid var(--border);
+      background: white;
+    }
+    .logos-title {
+      text-align: center;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 32px;
+    }
+    .logos-grid {
+      display: flex;
+      justify-content: center;
+      gap: clamp(32px, 6vw, 80px);
+      align-items: center;
+      flex-wrap: wrap;
+      opacity: 0.6;
+      filter: grayscale(100%);
+      transition: opacity 0.3s;
+    }
+    .logos-grid:hover { opacity: 1; filter: grayscale(0%); }
+    .logos-grid img, .logos-grid svg { height: 32px; max-width: 140px; }
+
+    /* Features */
+    .features { padding: 120px 0; background: white; }
+    .features-header { text-align: center; max-width: 600px; margin: 0 auto 80px; }
+    .features-header h2 { font-size: 2.5rem; margin-bottom: 16px; }
+    .features-header p { color: var(--text-muted); font-size: 1.125rem; }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+    }
+
+    .feature-card {
+      padding: 40px 32px;
+      border-radius: var(--radius-lg);
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      background: white;
+    }
+    .feature-icon {
+      width: 56px; height: 56px;
+      background: white;
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      color: var(--primary);
+    }
+    .feature-icon svg { width: 28px; height: 28px; }
+    .feature-card h3 { font-size: 1.25rem; margin-bottom: 12px; }
+    .feature-card p { color: var(--text-muted); }
+
+    /* Footer */
+    .footer {
+      padding: 80px 0 40px;
+      background: var(--surface-alt);
+      border-top: 1px solid var(--border);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 60px;
+      margin-bottom: 60px;
+    }
+    .footer-col p { color: var(--text-muted); margin-top: 16px; max-width: 300px; }
+    .footer-col h4 { font-size: 1rem; margin-bottom: 24px; }
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 12px; }
+    .footer-links a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--primary); }
+    .footer-bottom {
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero { padding: 140px 0 60px; }
+      .hero-actions { flex-direction: column; }
+      .hero-actions .btn { width: 100%; }
+      .footer-grid { grid-template-columns: 1fr; gap: 40px; }
+      .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container nav-content">
+      <a href="/" class="logo">
+        <div class="logo-icon"></div>
+        GoUp
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#pricing">Pricing</a>
+      </div>
+      <div class="nav-actions">
+        {% if user.is_authenticated %}
+          <a href="{% url 'dashboard-shell' %}" class="btn btn-primary">Go to Dashboard</a>
+        {% else %}
+          <a href="{% url 'dashboard-login' %}" class="btn btn-outline" style="border:none;">Sign In</a>
+          <a href="{% url 'dashboard-signup' %}" class="btn btn-primary">Get Started</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-blob"></div>
+    <div class="container">
+      <div class="hero-badge">
+        🚀 The fastest way to engage leads
+      </div>
+      <h1 class="text-gradient">Turn Facebook Leads into <br/>Customers in Seconds</h1>
+      <p>Automate your follow-ups via WhatsApp, SMS, and Email the instant a lead submits your Meta form. Zero coding required.</p>
+      
+      <div class="hero-actions">
+        <a href="{% url 'dashboard-signup' %}" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.125rem;">Start 14-Day Free Trial</a>
+        <a href="#demo" class="btn btn-outline" style="padding: 16px 32px; font-size: 1.125rem;">
+          <svg style="width:20px;height:20px;margin-right:8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Watch Demo
+        </a>
+      </div>
+
+      <div class="hero-image-wrapper">
+        <img src="{% static 'dashboard/images/hero-mockup.png' %}" alt="GoUp Dashboard interface showing automation flows and lead sync" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Logos Section -->
+  <section class="logos-section">
+    <div class="container">
+      <h3 class="logos-title">Seamlessly integrates with your workflow</h3>
+      <div class="logos-grid">
+        <!-- Meta/Facebook -->
+        <svg viewBox="0 0 512 512" fill="currentColor"><path d="M512 256C512 114.6 397.4 0 256 0S0 114.6 0 256c0 120.5 82.7 220.8 196 245V322.7h-58v-66.7h58v-48.1c0-59.5 35.1-93.5 88.5-93.5 19.3 0 49 4.3 58.7 7.7v63.1h-44.5c-29.3 0-38.7 18.2-38.7 34.6v36.1h79.8l-12.8 66.7h-67v178.2C429.3 476.9 512 376.5 512 256z"/></svg>
+        <!-- WhatsApp -->
+        <svg viewBox="0 0 512 512" fill="currentColor"><path d="M256.064 0h-.128l-.04-1.04C114.78 0 0 114.78 0 255.936c0 44.928 11.712 87.04 32.576 123.776l-31.296 114.112 116.736-30.656C153.94 482.048 194.04 492.8 256 492.8c141.156 0 256-114.78 256-255.936S397.22 0 256.064 0zm132.8 349.568c-5.44 15.296-31.552 29.568-43.2 31.68-11.648 2.112-25.024 4.096-82.688-19.84-69.696-28.928-114.752-99.776-118.208-104.384-3.456-4.608-28.224-37.568-28.224-71.744 0-34.176 17.856-51.136 24.128-57.856 6.272-6.72 13.568-8.448 18.048-8.448 4.416 0 8.896-.064 12.352-.192 4.48-.192 10.496-1.728 16.384 12.48 6.016 14.528 19.392 47.36 21.056 50.752 1.728 3.392 2.816 7.36.576 11.84-2.24 4.544-3.392 7.36-6.848 11.456-3.392 4.032-7.04 8.448-10.112 11.648-3.456 3.648-7.04 7.552-3.072 14.272 3.904 6.656 17.408 28.672 37.376 46.528 25.856 23.04 47.744 30.272 54.4 33.536 6.656 3.328 10.56 2.752 14.528-1.408 3.968-4.16 17.152-19.968 21.696-26.816 4.544-6.848 9.088-5.76 15.168-3.584 6.144 2.112 38.656 18.24 45.248 21.568 6.656 3.328 11.136 4.992 12.736 7.744 1.664 2.816 1.664 15.936-3.776 31.232z"/></svg>
+        <!-- Twilio -->
+        <svg viewBox="0 0 512 512" fill="currentColor"><path d="M256 0c141.385 0 256 114.615 256 256S397.385 512 256 512 0 397.385 0 256 114.615 0 256 0zm0 188c-37.555 0-68 30.445-68 68v136c0 37.555 30.445 68 68 68h136c37.555 0 68-30.445 68-68V256c0-37.555-30.445-68-68-68H256zm-136 0c-37.555 0-68 30.445-68 68s30.445 68 68 68h68v-136h-68z"/></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="features">
+    <div class="container">
+      <div class="features-header">
+        <h2>Engage faster. Close more.</h2>
+        <p>Speed to lead is everything. We handle the manual outreach so you can focus on building relationships and closing deals.</p>
+      </div>
+      <div class="grid-3">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+          </div>
+          <h3>Instant Sync</h3>
+          <p>The moment a lead clicks submit on your Facebook Ad, their data arrives instantly in your GoUp dashboard via Meta Webhooks.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+          </div>
+          <h3>Omnichannel Rules</h3>
+          <p>Set custom automation rules. Send a welcome Email, a quick SMS, or a WhatsApp template dynamically based on which form was submitted.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          </div>
+          <h3>Team Collaboration</h3>
+          <p>Say goodbye to shared spreadsheets. Invite your sales reps via email, transfer ownership, and manage your entire team in one workspace.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <a href="/" class="logo">
+            <div class="logo-icon"></div>
+            GoUp
+          </a>
+          <p>Automated lead follow-ups built for modern sales teams. Connect Meta, Twilio, and more to close faster.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul class="footer-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#">Guides</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul class="footer-links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 GoUp Inc. All rights reserved.</p>
+        <p>Built with ❤️ for Sales Teams.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

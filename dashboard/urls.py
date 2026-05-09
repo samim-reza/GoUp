@@ -1,6 +1,7 @@
 from django.urls import path
 
 from dashboard.views import (
+    LandingPageView,
     DashboardLoginView,
     DashboardLogoutView,
     DashboardShellView,
@@ -31,10 +32,11 @@ from dashboard.views import (
 
 
 urlpatterns = [
+    path("", LandingPageView.as_view(), name="landing-page"),
+    path("app/", DashboardShellView.as_view(), name="dashboard-shell"),
     path("login/", DashboardLoginView.as_view(), name="dashboard-login"),
     path("signup/", DashboardSignupView.as_view(), name="dashboard-signup"),
     path("logout/", DashboardLogoutView.as_view(), name="dashboard-logout"),
-    path("", DashboardShellView.as_view(), name="dashboard-shell"),
     path("app/overview/", overview_section, name="dashboard-overview"),
     path("app/pages/", pages_section, name="dashboard-pages"),
     path("app/forms/", forms_section, name="dashboard-forms"),
